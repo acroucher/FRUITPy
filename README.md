@@ -14,7 +14,19 @@ Then you may install it by running `python setup.py install`, in the FRUITPy dir
 
 # Running Fortran unit tests using FRUITPy:
 
-Create a Python script that imports the FRUIT module and controls the unit testing procedure. Then create a `test_suite` object which will control the unit tests. You can use its `build_run()` method to write the test driver Fortran program, build it and run it. Or if you prefer, you may use the `write()`, `build()` and `run()` methods individually.
+Create a Python script that imports the FRUIT module, and creates a `test_suite` object to control the unit tests. You can use its `build_run()` method to write the test driver Fortran program, build it and run it. Or if you prefer, you may use the `write()`, `build()` and `run()` methods individually.
+
+Here's a simple example FRUITPy script, testing two Fortran modules:
+
+    from FRUIT import *
+
+    test_modules = ['test_orange.F90', 'test_banana.F90']
+    driver = "test_driver.F90"
+    build_command = "make test_driver"
+
+    suite = test_suite(test_modules)
+    suite.build_run(driver, build_command)
+    suite.summary()
 
 # Conventions for test modules to be run by FRUITPy
 
