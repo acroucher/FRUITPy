@@ -62,7 +62,7 @@ You can print a summary of the results by using the `test_suite` `summary()` met
 
 # Licensing
 
-FRUITPy is distributed under the GNU General Public License (GPL).
+FRUITPy is free software, distributed under the GNU General Public License (GPL).
 
 # Issues
 
