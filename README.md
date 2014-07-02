@@ -1,0 +1,57 @@
+# What is FRUITPy?
+
+FRUITPy is a module for building and running Fortran unit tests using a Python interface to the [FRUIT](http://sourceforge.net/projects/fortranxunit/) library, as a simple alternative to some of the original Ruby tools provided with FRUIT.
+
+Enjoy the taste of FRUITPy while maintaining Fortran!
+
+# Installing FRUITPy:
+
+First, you need to have FRUIT itself installed on your machine. All you really need are the two FRUIT source files, fruit.f90 and fruit_util.f90. You need to be able to link your Fortran unit test code to these files. You can either compile them in directly (as suggested by the FRUIT developers) or you may prefer to compile these two files into a library that you can link to.
+
+To install FRUITPy, either download the zip file and unzip it, or clone the FRUITPy Git repository, as you prefer.
+
+Then you may install it by running `python setup.py install`, in the FRUITPy directory.
+
+# Running Fortran unit tests using FRUITPy:
+
+Create a Python script that imports the FRUIT module and controls the unit testing procedure. Then create a `test_suite` object which will control the unit tests. You can use its `build_run()` method to write the test driver Fortran program, build it and run it. Or if you prefer, you may use the `write()`, `build()` and `run()` methods individually.
+
+# Conventions for test modules to be run by FRUITPy
+
+FRUITPy assumes the following conventions for your Fortran test modules:
+
+* each module should contain first a 'use fruit' line, then a use statement for the module being tested
+
+* after the 'contains' statement, put your tests into subroutines, with no arguments (with or without brackets)
+
+* the title of each test (to be displayed in the test results) can be put as a comment in the first non-blank line of the subroutine (otherwise the subroutine name will be used in output)
+
+* end each subroutine with an 'end subroutine' statement (with the subroutine name optionally at the end)
+
+* refer to the FRUIT documentation for usage of FRUIT commands (assert_true() etc.)  in the subroutines
+
+* one of your modules may contain subroutines called 'setup' and 'teardown', to be called respectively before and after all the tests are run
+
+# Files created by FRUITPy
+
+When you call the `build_run()` method of a `test_suite` object, it will create a Fortran driver source file for the suite of tests, and build it into a driver executable. Specify the desired driver source file name in your call to build_run(), along with the command for building the driver. This could be e.g. a make command if you have a makefile to build the driver.
+ 
+If the driver program is successfully built, it will have a name based on the driver source file name (with a *.exe extension added on Windows systems). Note that this naming convention must be respected in your build command (e.g. makefile). Your makefile or other build command will also need to specify how to link to your code under test, to your test modules and to FRUIT (see above for methods of linking to FRUIT).
+
+If all goes well, the driver program will run and FRUIT will carry out the tests. The FRUIT console output is not displayed automatically, but is saved in the `test_suite` `output` property, and is also written to an output file (with same base name as the driver program, but with a '.out' extension). FRUITPy does not support the optional XML output that FRUIT can produce. Unfortunately this XML output is not well-formed, according to Python's XML parser.
+
+# Output from FRUITPy
+
+The `test_suite` `build_run()` method returns True if all tests passed successfully, and False if any failed.
+
+You can also access summary statistics via the `test_suite` properties `asserts` and `cases`, which have their own properties `success`,`total` and `percent`. The test failure messages are accessible via the test_suite `messages` property (a list of strings).
+
+You can print a summary of the results by using the `test_suite` `summary()` method.
+
+# Licensing
+
+FRUITPy is distributed under the GNU General Public License (GPL).
+
+# Issues
+
+FRUITPy should work on most computing platforms, but has so far only been tested on Linux.
