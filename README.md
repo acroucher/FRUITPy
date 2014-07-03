@@ -2,7 +2,7 @@
 
 FRUITPy is a module for building and running Fortran unit tests using a Python interface to the [FRUIT](http://sourceforge.net/projects/fortranxunit/) library, as a simple alternative to some of the original Ruby tools provided with FRUIT.
 
-Enjoy the taste of FRUITPy while maintaining Fortran!
+Enjoy a slice of FRUITPy while maintaining Fortran!
 
 # Installing FRUITPy:
 
