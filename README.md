@@ -28,6 +28,8 @@ Here's a simple example FRUITPy script, testing two Fortran modules:
     suite.build_run(driver, build_command)
     suite.summary()
 
+An example using FRUITPy to run the original 'FRUIT in 3 minutes' example can be found on the [FRUITPy wiki](https://github.com/acroucher/FRUITPy/wiki).
+
 # Conventions for test modules to be run by FRUITPy
 
 FRUITPy assumes the following conventions for your Fortran test modules:
