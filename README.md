@@ -20,7 +20,7 @@ Here's a simple example FRUITPy script, testing two Fortran modules:
 
     from FRUIT import *
 
-    test_modules = ['test_orange.F90', 'test_banana.F90']
+    test_modules = ["test_orange.F90", "test_banana.F90"]
     driver = "test_driver.F90"
     build_command = "make test_driver"
 
@@ -34,11 +34,11 @@ An example using FRUITPy to run the original 'FRUIT in 3 minutes' example can be
 
 FRUITPy assumes the following conventions for your Fortran test modules:
 
-* each module should contain first a 'use fruit' line, then a use statement for the module being tested
+* each test module should contain a 'use fruit' line, and a use statement for the module being tested
 
 * after the 'contains' statement, put your tests into subroutines, with no arguments (with or without brackets)
 
-* the title of each test (to be displayed in the test results) can be put as a comment in the first non-blank line of the subroutine (otherwise the subroutine name will be used in output)
+* the title of each test (to be displayed in the test results) can optionally be put as a comment in the first non-blank line of the subroutine (otherwise the subroutine name will be used in output)
 
 * end each subroutine with an 'end subroutine' statement (with the subroutine name optionally at the end)
 
