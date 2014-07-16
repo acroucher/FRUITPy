@@ -18,15 +18,17 @@ Create a Python script that imports the FRUIT module, and creates a `test_suite`
 
 Here's a simple example FRUITPy script, testing two Fortran modules:
 
-    from FRUIT import *
+```python
+from FRUIT import *
 
-    test_modules = ["test_orange.F90", "test_banana.F90"]
-    driver = "test_driver.F90"
-    build_command = "make test_driver"
+test_modules = ["test_orange.F90", "test_banana.F90"]
+driver = "test_driver.F90"
+build_command = "make test_driver"
 
-    suite = test_suite(test_modules)
-    suite.build_run(driver, build_command)
-    suite.summary()
+suite = test_suite(test_modules)
+suite.build_run(driver, build_command)
+suite.summary()
+```
 
 An example using FRUITPy to run the original 'FRUIT in 3 minutes' example can be found on the [FRUITPy wiki](https://github.com/acroucher/FRUITPy/wiki).
 
