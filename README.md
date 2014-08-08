@@ -40,6 +40,8 @@ FRUITPy assumes the following conventions for your Fortran test modules:
 
 * after the 'contains' statement, put your tests into subroutines, with no arguments (with or without brackets)
 
+* each test subroutine name should start with 'test_'
+
 * the title of each test (to be displayed in the test results) can optionally be put as a comment in the first non-blank line of the subroutine (otherwise the subroutine name will be used in output)
 
 * end each subroutine with an 'end subroutine' statement (with the subroutine name optionally at the end)

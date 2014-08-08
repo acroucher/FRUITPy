@@ -62,6 +62,7 @@ class test_module(object):
         lowername = name.lower()
         if lowername == 'setup': subtype = 'setup'
         elif lowername == 'teardown': subtype = 'teardown'
+        elif lowername.startswith('test_'): subtype = 'test'
         else: subtype = None
         return subtype
 
@@ -74,7 +75,7 @@ class test_module(object):
             bracpos = subname.find('(')
             if bracpos >=0: subname = subname[:bracpos]
             subtype = self.subroutine_type(subname)
-            if subtype is None:
+            if subtype == 'test':
                 line = f.readline()
                 while not line.strip(): line = f.readline()
                 comment_pos = line.find('!')
