@@ -201,7 +201,7 @@ class test_suite(object):
             lines.append('  call fruit_finalize')
         else:
             lines.append('  call fruit_summary_mpi(size, rank)')
-            lines.append('  call fruit_finalize(size, rank)')
+            lines.append('  call fruit_finalize_mpi(size, rank)')
 
         if self.teardown: lines.append('  call teardown')
 
