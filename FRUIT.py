@@ -242,16 +242,17 @@ class test_suite(object):
             if num_procs == 1:
                 run_command = './' if os.name == "posix" else ''
             else: 
-                run_command = "mpirun -np " + str(num_procs)
+                run_command = "mpirun -np " + str(num_procs) + ' '
         else:
             if num_procs == 1:
                 run_command = run_command.strip() + ' '
             else:
-                run_command = run_command.strip() + " -np " + str(num_procs)
+                run_command = run_command.strip() + " -np " + str(num_procs) + ' '
         run = run_command + self.exe
         basename, ext = splitext(self.driver)
         self.outputfile = basename + '.out'
         run += " > " + self.outputfile
+        print "run command:", run
         call(run, shell = True)
         self.parse_output_file()
         return self.success
