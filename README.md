@@ -76,7 +76,7 @@ If you have FRUIT version 3.3.0 or later, you can use FRUITPy to do parallel uni
 
 - add the `num_procs` parameter to the `build_run()` (or `run()`) command and specify the number of processors to use, an integer value greater than 1
 
-- include commands for initializing and finalizing MPI in your `setup()` and `teardown()` Fortran routines (e.g. `call MPI_init(ierr)` and call MPI_finalize(ierr)`)
+- include commands for initializing and finalizing MPI in your `setup()` and `teardown()` Fortran routines (e.g. `call MPI_init(ierr)` and `call MPI_finalize(ierr)`)
 
 - use an MPI wrapper compiler in your makefile to build the test suite, e.g. `mpif90`
 
