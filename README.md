@@ -6,7 +6,9 @@ Enjoy a slice of FRUITPy while maintaining Fortran!
 
 # Installing FRUITPy:
 
-First, you need to have FRUIT itself installed on your machine. All you really need are the two FRUIT source files, fruit.f90 and fruit_util.f90. You need to be able to link your Fortran unit test code to these files. You can either compile them in directly (as suggested by the FRUIT developers) or you may prefer to compile these two files into a library that you can link to.
+First, you need to have FRUIT itself installed on your machine. If you want to use FRUITPy for parallel unit testing using MPI, you will need FRUIT version 3.3.0 or later.
+
+All you really need are the two main FRUIT source files, fruit.f90 and fruit_util.f90 (and fruit_mpi.f90 for parallel unit testing). You need to be able to link your Fortran unit test code to these files. You can either compile them in directly (as suggested by the FRUIT developers) or you may prefer to compile these two files into a library that you can link to.
 
 To install FRUITPy, either download the zip file and unzip it, or clone the FRUITPy Git repository, as you prefer.
 
@@ -56,7 +58,9 @@ When you call the `build_run()` method of a `test_suite` object, it will create 
  
 If the driver program is successfully built, it will have a name based on the driver source file name (with a *.exe extension added on Windows systems). Note that this naming convention must be respected in your build command (e.g. makefile). Your makefile or other build command will also need to specify how to link to your code under test, to your test modules and to FRUIT (see above for methods of linking to FRUIT).
 
-If all goes well, the driver program will run and FRUIT will carry out the tests. The FRUIT console output is not displayed automatically, but is saved in the `test_suite` `output` property, and is also written to an output file (with same base name as the driver program, but with a '.out' extension). FRUITPy does not support the optional XML output that FRUIT can produce. Unfortunately this XML output is not well-formed, according to Python's XML parser.
+If all goes well, the driver program will run and FRUIT will carry out the tests. The FRUIT console output is not displayed automatically, but is saved in the `test_suite` `output` property, and is also written to an output file (with same base name as the driver program, but with a '.out' extension).
+
+FRUITPy does not support the optional XML output that FRUIT can produce. Unfortunately this XML output is not well-formed, according to Python's XML parser.
 
 # Output from FRUITPy
 
@@ -65,6 +69,16 @@ The `test_suite` `build_run()` method returns True if all tests passed successfu
 You can also access summary statistics via the `test_suite` properties `asserts` and `cases`, which have their own properties `success`,`total` and `percent`. The test failure messages are accessible via the test_suite `messages` property (a list of strings).
 
 You can print a summary of the results by using the `test_suite` `summary()` method.
+
+# Parallel unit testing using FRUITPy
+
+If you have FRUIT version 3.3.0 or later, you can use FRUITPy to do parallel unit testing using MPI. The procedure to follow is mostly the same as for serial unit testing, with these differences:
+
+- add the `num_procs` parameter to the `build_run()` (or `run()`) command and specify the number of processors to use, an integer value greater than 1
+
+- include commands for initializing and finalizing MPI in your `setup()` and `teardown()` Fortran routines (e.g. `call MPI_init(ierr)` and call MPI_finalize(ierr)`)
+
+- use an MPI wrapper compiler in your makefile to build the test suite, e.g. `mpif90`
 
 # Licensing
 
