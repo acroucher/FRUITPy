@@ -218,26 +218,31 @@ class test_suite(object):
         f.write('\n'.join(lines))
         f.close()
         
-    def build(self, build_command):
+    def build(self, build_command, output_dir = ''):
         """Compiles and links FRUIT driver program. Returns True if
         the build was successful."""
         from subprocess import call
-        from os.path import isfile, splitext
+        from os.path import isfile, splitext, split
         from os import remove
         from sys import platform
         self.exe, ext = splitext(self.driver)
+        source_path, self.exe = split(self.exe)
         if platform == 'win32': self.exe += ".exe"
-        if isfile(self.exe) : remove(self.exe)
+        pathexe = output_dir + self.exe
+        if isfile(pathexe) : remove(pathexe)
         call(build_command, shell = True)
-        return isfile(self.exe)
+        return isfile(pathexe)
 
-    def run(self, run_command = None, num_procs = 1):
+    def run(self, run_command = None, num_procs = 1, output_dir = ''):
         """Runs test suite, and returns True if all tests passed. An optional run command
         may be specified. If num_procs > 1, the suite will be run using in parallel using
         MPI."""
         import os
-        from os.path import splitext, isfile
+        from os.path import splitext, isfile, split
         from subprocess import call
+        if output_dir != '':
+            orig_dir = os.getcwd()
+            os.chdir(output_dir)
         if run_command is None:
             if num_procs == 1:
                 run_command = './' if os.name == "posix" else ''
@@ -249,12 +254,13 @@ class test_suite(object):
             else:
                 run_command = run_command.strip() + " -np " + str(num_procs) + ' '
         run = run_command + self.exe
-        basename, ext = splitext(self.driver)
+        basename, ext = splitext(self.exe)
+        path, basename = split(basename)
         self.outputfile = basename + '.out'
         run += " > " + self.outputfile
-        print "run command:", run
         call(run, shell = True)
         self.parse_output_file()
+        if output_dir != '': os.chdir(orig_dir)
         return self.success
 
     def parse_output_file(self):
@@ -319,17 +325,23 @@ class test_suite(object):
         print "  asserts: ", self.asserts
         print "  cases  : ", self.cases
 
-    def build_run(self, driver, build_command = "make", run_command = None, num_procs = 1):
+    def build_run(self, driver, build_command = "make", run_command = None,
+                  num_procs = 1, output_dir = ''):
         """Writes, builds and runs test suite. Returns True if the
-        build and all tests were successful.  The 'driver' string
-        parameter specifies the name of the driver program source file
-        to be created. The 'build' string parameter specifies the
-        command for building the test driver program. An optional run
-        command can be specified to override the default. Specify
-        num_procs > 1 to run the test suite in parallel using MPI."""
+        build and all tests were successful.
+        The parameters are:
+        - 'driver' (string): name of the driver program source file to be created
+        (include path if you want it created in a different directory)
+        - 'build_command' (string): command for building the test driver program
+        - 'run_command' (string): command for running the driver program (to override
+        the default, based on the driver source name)
+        - 'num_procs' (integer): set > 1 to run the test suite in parallel using MPI
+        - 'output_dir' (string): directory for driver executable (default is the 
+        driver source directory)"""
         if self.num_test_modules > 0:
             self.write(driver, num_procs)
-            if self.build(build_command): return self.run(run_command, num_procs)
+            if self.build(build_command, output_dir):
+                return self.run(run_command, num_procs, output_dir)
         return False
     
 if __name__ == '__main__':
