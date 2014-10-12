@@ -212,15 +212,25 @@ class test_suite(object):
 
     def write(self, driver, num_procs = 1):
         """Writes driver program to file."""
+        from os.path import isfile
         self.driver = driver
-        f = open(self.driver, 'w')
-        lines = self.driver_lines(num_procs)
-        f.write('\n'.join(lines))
-        f.close()
+        lines = '\n'.join(self.driver_lines(num_procs))
+        if isfile(self.driver):
+            oldlines = ''.join([line for line in open(self.driver)])
+            update = oldlines != lines
+        else: update = True
+        if update:
+            f = open(self.driver, 'w')
+            f.write(lines)
+            f.close()
+        return update
         
-    def build(self, build_command, output_dir = ''):
+    def build(self, build_command, output_dir = '', update = True):
         """Compiles and links FRUIT driver program. Returns True if
-        the build was successful."""
+        the build was successful. The output_dir parameter specifies
+        the directory for the executable (same as source by default).
+        Setting the update parameter to True forces the executable to
+        be rebuilt."""
         from subprocess import call
         from os.path import isfile, splitext, split
         from os import remove
@@ -229,7 +239,7 @@ class test_suite(object):
         source_path, self.exe = split(self.exe)
         if platform == 'win32': self.exe += ".exe"
         pathexe = output_dir + self.exe
-        if isfile(pathexe) : remove(pathexe)
+        if isfile(pathexe) and update: remove(pathexe)
         call(build_command, shell = True)
         return isfile(pathexe)
 
@@ -339,8 +349,8 @@ class test_suite(object):
         - 'output_dir' (string): directory for driver executable (default is the 
         driver source directory)"""
         if self.num_test_modules > 0:
-            self.write(driver, num_procs)
-            if self.build(build_command, output_dir):
+            update = self.write(driver, num_procs)
+            if self.build(build_command, output_dir, update):
                 return self.run(run_command, num_procs, output_dir)
         return False
     
