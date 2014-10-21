@@ -64,7 +64,7 @@ FRUITPy does not support the optional XML output that FRUIT can produce. Unfortu
 
 # Output from FRUITPy
 
-The `test_suite` `build_run()` method returns True if all tests passed successfully, and False if any failed.
+The `test_suite` `build_run()` method returns True if all tests were built and passed successfully, and False otherwise. (You can check the `test_suite` `built` property to see if the test were built successfully, independently of whether they passed or not.)
 
 You can also access summary statistics via the `test_suite` properties `asserts` and `cases`, which have their own properties `success`,`total` and `percent`. The test failure messages are accessible via the test_suite `messages` property (a list of strings).
 
