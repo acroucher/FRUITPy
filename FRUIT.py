@@ -125,6 +125,7 @@ class test_suite(object):
         self.exe = None
         self.asserts = test_result()
         self.cases = test_result()
+        self.built = False
         self.parse()
 
     def __repr__(self):
@@ -241,7 +242,8 @@ class test_suite(object):
         pathexe = output_dir + self.exe
         if isfile(pathexe) and update: remove(pathexe)
         call(build_command, shell = True)
-        return isfile(pathexe)
+        self.built = isfile(pathexe)
+        return self.built
 
     def run(self, run_command = None, num_procs = 1, output_dir = ''):
         """Runs test suite, and returns True if all tests passed. An optional run command
