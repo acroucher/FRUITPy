@@ -190,12 +190,13 @@ class test_suite(object):
             lines.append('')
 
         for mod in self.test_modules:
-            if self.num_test_modules > 1:
-                lines.append('  ! ' + mod.test_filename.strip() + ':')
-            for sub in mod.subroutines:
-                lines.append('  call run_test_case(' + 
-                             sub.name + ',"' + sub.description + '")')
-            lines.append('')
+            if mod.subroutines:
+                if self.num_test_modules > 1:
+                    lines.append('  ! ' + mod.test_filename.strip() + ':')
+                for sub in mod.subroutines:
+                    lines.append('  call run_test_case(' + 
+                                 sub.name + ',"' + sub.description + '")')
+                lines.append('')
 
         if num_procs == 1:
             lines.append('  call fruit_summary')
