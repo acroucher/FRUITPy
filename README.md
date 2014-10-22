@@ -50,7 +50,7 @@ FRUITPy assumes the following conventions for your Fortran test modules:
 
 * refer to the FRUIT documentation for usage of FRUIT commands (assert_true() etc.)  in the subroutines
 
-* one of your modules may contain subroutines called 'setup' and 'teardown', to be called respectively before and after all the tests are run
+* one of your modules may contain subroutines called 'setup' and 'teardown', to be called respectively before and after all the tests are run (these subroutines can optionally be in their own module, with no test subroutines in it- useful for setup/ teardown of multiple test modules)
 
 # Files created by FRUITPy
 
