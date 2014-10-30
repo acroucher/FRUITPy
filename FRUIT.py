@@ -178,8 +178,10 @@ class test_suite(object):
             lines.append('  use ' + mod.test_module_name)
         lines.append('')
 
+        lines.append('  implicit none')
         if num_procs > 1:
             lines.append('  integer :: size, rank, ierr')
+        lines.append('')
 
         lines.append('  call init_fruit')
         if self.setup: lines.append('  call setup')
