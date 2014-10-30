@@ -156,7 +156,7 @@ class test_suite(object):
         imod = line.find('module')
         self.test_module_name = line[imod:].strip().split()[1]
 
-    def driver_lines(self, num_procs = 1):
+    def driver_lines(self, num_procs = 1, mpi_comm = 'MPI_COMM_WORLD'):
         """Creates lines for driver program to write to file."""
 
         lines = []
@@ -186,8 +186,8 @@ class test_suite(object):
         lines.append('')
 
         if num_procs > 1:
-            lines.append('  call MPI_COMM_SIZE(MPI_COMM_WORLD, size, ierr)')
-            lines.append('  call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)')
+            lines.append('  call MPI_COMM_SIZE(' + mpi_comm + ', size, ierr)')
+            lines.append('  call MPI_COMM_RANK(' + mpi_comm + ', rank, ierr)')
             lines.append('')
 
         for mod in self.test_modules:
@@ -213,11 +213,11 @@ class test_suite(object):
 
         return lines
 
-    def write(self, driver, num_procs = 1):
+    def write(self, driver, num_procs = 1, mpi_comm = 'MPI_COMM_WORLD'):
         """Writes driver program to file."""
         from os.path import isfile
         self.driver = driver
-        lines = '\n'.join(self.driver_lines(num_procs))
+        lines = '\n'.join(self.driver_lines(num_procs, mpi_comm))
         if isfile(self.driver):
             oldlines = ''.join([line for line in open(self.driver)])
             update = oldlines != lines
@@ -340,7 +340,7 @@ class test_suite(object):
         print "  cases  : ", self.cases
 
     def build_run(self, driver, build_command = "make", run_command = None,
-                  num_procs = 1, output_dir = ''):
+                  num_procs = 1, output_dir = '', mpi_comm = 'MPI_COMM_WORLD'):
         """Writes, builds and runs test suite. Returns True if the
         build and all tests were successful.
         The parameters are:
@@ -351,9 +351,12 @@ class test_suite(object):
         the default, based on the driver source name)
         - 'num_procs' (integer): set > 1 to run the test suite in parallel using MPI
         - 'output_dir' (string): directory for driver executable (default is the 
-        driver source directory)"""
+        driver source directory)
+        - 'mpi_comm' (string): name of MPI communicator to use in driver program
+        (default is 'MPI_COMM_WORLD')
+        """
         if self.num_test_modules > 0:
-            update = self.write(driver, num_procs)
+            update = self.write(driver, num_procs, mpi_comm)
             if self.build(build_command, output_dir, update):
                 return self.run(run_command, num_procs, output_dir)
         return False
