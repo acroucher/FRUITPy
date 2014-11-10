@@ -198,7 +198,7 @@ class test_suite(object):
                     lines.append('  ! ' + mod.test_filename.strip() + ':')
                 for sub in mod.subroutines:
                     lines.append('  call run_test_case(' + 
-                                 sub.name + ',"' + sub.description + '")')
+                                 sub.name + ', "' + sub.description + '")')
                 lines.append('')
 
         if num_procs == 1:
