@@ -1,0 +1,29 @@
+# builds FRUIT as a shared library
+
+# these paths specify where to put the resulting library object
+# and Fortran module files:
+INSTALL_DIR = $(HOME)/lib
+INCL_DIR = $(HOME)/include
+
+F90=.f90
+OBJ=.o
+LIB = libfruit.so
+SRC = src/
+BUILD = $(SRC)
+
+# compiler options:
+FC = mpif90
+FLAGS = -c -fpic -O3
+
+SOURCES = fruit_util fruit fruit_mpi
+OBJS = $(patsubst %, $(BUILD)%$(OBJ), $(SOURCES))
+
+$(LIB) : $(OBJS)
+	$(FC) -shared -o $(LIB) $(OBJS)
+
+$(BUILD)%$(OBJ): $(SRC)%$(F90)
+	$(FC) $(FLAGS) -c $< -o $@
+
+install : 
+	cp $(LIB) $(INSTALL_DIR)
+	cp $(BUILD)*.mod $(INCL_DIR)
