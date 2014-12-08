@@ -8,7 +8,7 @@ Enjoy a slice of FRUITPy while maintaining Fortran!
 
 First, you need to have FRUIT itself installed on your machine. If you want to use FRUITPy for parallel unit testing using MPI, you will need FRUIT version 3.3.0 or later.
 
-All you really need are the two main FRUIT source files, fruit.f90 and fruit_util.f90 (and fruit_mpi.f90 for parallel unit testing). You need to be able to link your Fortran unit test code to these files. You can either compile them in directly (as suggested by the FRUIT developers) or you may prefer to compile these two files into a library that you can link to. A makefile for doing that is included with FRUITPy (fruit_makefile)- just copy this to the FRUIT base directory, edit the INSTALL_DIR and INCL_DIR in the makefile if you want the library and Fortran module files installed somewhere different from the defaults, and type `make` and then `make install`.
+All you really need are the two main FRUIT source files, fruit.f90 and fruit_util.f90 (and fruit_mpi.f90 for parallel unit testing). You need to be able to link your Fortran unit test code to these files. You can either compile them in directly (as suggested by the FRUIT developers) or you may prefer to compile these two files into a library that you can link to. A makefile for doing that is included with FRUITPy (fruit_makefile)- just copy this to the FRUIT base directory, rename it as 'makefile', edit the INSTALL_DIR and INCL_DIR in the makefile if you want the library and Fortran module files installed somewhere different from the defaults, and type `make` and then `make install`.
 
 To install FRUITPy, either download the zip file and unzip it, or clone the FRUITPy Git repository, as you prefer.
 
