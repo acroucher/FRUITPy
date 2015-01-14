@@ -24,6 +24,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from __future__ import print_function
+
 class test_subroutine(object):
     """Stores test subroutine data."""
     
@@ -332,14 +334,14 @@ class test_suite(object):
 
     def summary(self):
         """Prints a summary of the test results."""
-        if self.success: print "All tests passed."
+        if self.success: print("All tests passed.")
         else:
-            print "Some tests failed:\n"
-            print '\n'.join(self.messages)
-            print 
-        print "Hit rate:"
-        print "  asserts: ", self.asserts
-        print "  cases  : ", self.cases
+            print("Some tests failed:\n")
+            print('\n'.join(self.messages))
+            print() 
+        print("Hit rate:")
+        print("  asserts: ", self.asserts)
+        print("  cases  : ", self.cases)
 
     def build_run(self, driver, build_command = "make", run_command = None,
                   num_procs = 1, output_dir = '', mpi_comm = 'MPI_COMM_WORLD'):
