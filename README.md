@@ -52,7 +52,7 @@ FRUITPy assumes the following conventions for your Fortran test modules:
 
 * one of your modules may contain subroutines called 'setup' and 'teardown', to be called respectively before and after all the tests are run (these subroutines can optionally be in their own module, with no test subroutines in it- useful for setup/ teardown of multiple test modules)
 
-* each module may also have its own module-specific setup and teardown routines, to be called before and after the tests for that module are run. The name of a module setup routine must contain '_setup' or 'setup_', and the name of a module teardown routine must contain '_teardown' or 'teardown_'.
+* each module may also have its own module-specific setup and teardown routines, to be called before and after the tests for that module are run. The name of a module setup routine must contain '\_setup' or 'setup\_', and the name of a module teardown routine must contain '\_teardown' or 'teardown\_'.
 
 # Files created by FRUITPy
 
