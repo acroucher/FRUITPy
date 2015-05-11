@@ -26,12 +26,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
+def subroutine_type(name):
+    """Returns type of subroutine, 'setup' or 'teardown' if it has
+    either of those names, or module setup or teardown, otherwise None."""
+    lowername = name.lower()
+    if lowername == 'setup': subtype = 'setup'
+    elif lowername == 'teardown': subtype = 'teardown'
+    elif 'setup_' in lowername or '_setup' in lowername:
+        subtype = 'module setup'
+    elif 'teardown_' in lowername or '_teardown' in lowername:
+        subtype = 'module teardown'
+    elif lowername.startswith('test_'): subtype = 'test'
+    else: subtype = None
+    return subtype
+
 class test_subroutine(object):
     """Stores test subroutine data."""
     
-    def __init__(self, name = "", description = ""):
+    def __init__(self, name = "", description = "", subtype = None):
         self.name = name
         self.description = description
+        self.subtype = subtype
 
 class test_module(object):
 
@@ -58,15 +73,14 @@ class test_module(object):
         imod = line.find('module')
         self.test_module_name = line[imod:].strip().split()[1]
 
-    def subroutine_type(self, name):
-        """Returns type of subroutine, 'setup' or 'teardown' if it has
-        either of those names, otherwise None."""
-        lowername = name.lower()
-        if lowername == 'setup': subtype = 'setup'
-        elif lowername == 'teardown': subtype = 'teardown'
-        elif lowername.startswith('test_'): subtype = 'test'
-        else: subtype = None
-        return subtype
+    def parse_subroutine_description(self, f, subname):
+        """Parses subroutine to find its description."""
+        line = f.readline()
+        while not line.strip(): line = f.readline()
+        comment_pos = line.find('!')
+        if comment_pos >=0: description = line[comment_pos+1:].strip()
+        else: description = subname
+        return description
 
     def parse_subroutine(self, f, line):
         """Parses a single subroutine in a test module."""
@@ -76,22 +90,20 @@ class test_module(object):
             subname = line[isub:].strip().split()[1]
             bracpos = subname.find('(')
             if bracpos >=0: subname = subname[:bracpos]
-            subtype = self.subroutine_type(subname)
+            subtype = subroutine_type(subname)
             if subtype == 'test':
-                line = f.readline()
-                while not line.strip(): line = f.readline()
-                comment_pos = line.find('!')
-                if comment_pos >=0: description = line[comment_pos+1:].strip()
-                else: description = subname
-                sub = test_subroutine(subname, description)
+                description = self.parse_subroutine_description(f, subname)
+                sub = test_subroutine(subname, description, subtype)
                 self.subroutines.append(sub)
-            else:
-                if subtype == 'setup': self.setup = True
-                elif subtype == 'teardown': self.teardown = True
+            elif subtype == 'module setup': self.setup == subname
+            elif subtype == 'module teardown': self.teardown = subname
+            elif subtype == 'setup': self.global_setup = True
+            elif subtype == 'teardown': self.global_teardown = True
 
     def parse_subroutines(self, f):
         """Parses subroutines in test module."""
-        self.setup, self.teardown = False, False
+        self.setup, self.teardown = None, None
+        self.global_setup, self.global_teardown = False, False
         self.subroutines = []
         line = f.readline()
         while line:
@@ -137,13 +149,13 @@ class test_suite(object):
         return len(self.test_modules)
     num_test_modules = property(get_num_test_modules)
 
-    def get_setup(self):
-        return any([mod.setup for mod in self.test_modules])
-    setup = property(get_setup)
+    def get_global_setup(self):
+        return any([mod.global_setup for mod in self.test_modules])
+    global_setup = property(get_global_setup)
 
-    def get_teardown(self):
-        return any([mod.teardown for mod in self.test_modules])
-    teardown = property(get_teardown)
+    def get_global_teardown(self):
+        return any([mod.global_teardown for mod in self.test_modules])
+    global_teardown = property(get_global_teardown)
 
     def parse(self):
         """Parses test F90 files containing test cases."""
@@ -186,7 +198,7 @@ class test_suite(object):
         lines.append('')
 
         lines.append('  call init_fruit')
-        if self.setup: lines.append('  call setup')
+        if self.global_setup: lines.append('  call setup')
         lines.append('')
 
         if num_procs > 1:
@@ -195,13 +207,15 @@ class test_suite(object):
             lines.append('')
 
         for mod in self.test_modules:
+            if mod.setup: lines.append('  call ' + mod.setup)
             if mod.subroutines:
                 if self.num_test_modules > 1:
                     lines.append('  ! ' + mod.test_filename.strip() + ':')
                 for sub in mod.subroutines:
                     lines.append('  call run_test_case(' + 
                                  sub.name + ',"' + sub.description + '")')
-                lines.append('')
+            if mod.teardown: lines.append('  call ' + mod.teardown)
+            if mod.setup or mod.teardown or mod.subroutines: lines.append('')
 
         if num_procs == 1:
             lines.append('  call fruit_summary')
@@ -210,7 +224,7 @@ class test_suite(object):
             lines.append('  call fruit_summary_mpi(size, rank)')
             lines.append('  call fruit_finalize_mpi(size, rank)')
 
-        if self.teardown: lines.append('  call teardown')
+        if self.global_teardown: lines.append('  call teardown')
 
         lines.append('')
         lines.append('end program tests')
