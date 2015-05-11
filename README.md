@@ -52,6 +52,8 @@ FRUITPy assumes the following conventions for your Fortran test modules:
 
 * one of your modules may contain subroutines called 'setup' and 'teardown', to be called respectively before and after all the tests are run (these subroutines can optionally be in their own module, with no test subroutines in it- useful for setup/ teardown of multiple test modules)
 
+* each module may also have its own module-specific setup and teardown routines, to be called before and after the tests for that module are run. The name of a module setup routine must contain '_setup' or 'setup_', and the name of a module teardown routine must contain '_teardown' or 'teardown_'.
+
 # Files created by FRUITPy
 
 When you call the `build_run()` method of a `test_suite` object, it will create a Fortran driver source file for the suite of tests, and build it into a driver executable. Specify the desired driver source file name in your call to build_run(), along with the command for building the driver. This could be e.g. a make command if you have a makefile to build the driver.
