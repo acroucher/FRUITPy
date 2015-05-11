@@ -32,11 +32,11 @@ def subroutine_type(name):
     lowername = name.lower()
     if lowername == 'setup': subtype = 'setup'
     elif lowername == 'teardown': subtype = 'teardown'
+    elif lowername.startswith('test_'): subtype = 'test'
     elif 'setup_' in lowername or '_setup' in lowername:
         subtype = 'module setup'
     elif 'teardown_' in lowername or '_teardown' in lowername:
         subtype = 'module teardown'
-    elif lowername.startswith('test_'): subtype = 'test'
     else: subtype = None
     return subtype
 
