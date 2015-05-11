@@ -95,7 +95,7 @@ class test_module(object):
                 description = self.parse_subroutine_description(f, subname)
                 sub = test_subroutine(subname, description, subtype)
                 self.subroutines.append(sub)
-            elif subtype == 'module setup': self.setup == subname
+            elif subtype == 'module setup': self.setup = subname
             elif subtype == 'module teardown': self.teardown = subname
             elif subtype == 'setup': self.global_setup = True
             elif subtype == 'teardown': self.global_teardown = True
@@ -207,15 +207,15 @@ class test_suite(object):
             lines.append('')
 
         for mod in self.test_modules:
-            if mod.setup: lines.append('  call ' + mod.setup)
             if mod.subroutines:
                 if self.num_test_modules > 1:
                     lines.append('  ! ' + mod.test_filename.strip() + ':')
+                if mod.setup: lines.append('  call ' + mod.setup)
                 for sub in mod.subroutines:
                     lines.append('  call run_test_case(' + 
                                  sub.name + ',"' + sub.description + '")')
-            if mod.teardown: lines.append('  call ' + mod.teardown)
-            if mod.setup or mod.teardown or mod.subroutines: lines.append('')
+                if mod.teardown: lines.append('  call ' + mod.teardown)
+                if mod.setup or mod.teardown or mod.subroutines: lines.append('')
 
         if num_procs == 1:
             lines.append('  call fruit_summary')
