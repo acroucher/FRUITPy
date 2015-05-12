@@ -30,13 +30,13 @@ def subroutine_type(name):
     """Returns type of subroutine, 'setup' or 'teardown' if it has
     either of those names, or module setup or teardown, otherwise None."""
     lowername = name.lower()
-    if lowername == 'setup': subtype = 'setup'
-    elif lowername == 'teardown': subtype = 'teardown'
+    if lowername == 'setup': subtype = 'global setup'
+    elif lowername == 'teardown': subtype = 'global teardown'
     elif lowername.startswith('test_'): subtype = 'test'
     elif 'setup_' in lowername or '_setup' in lowername:
-        subtype = 'module setup'
+        subtype = 'setup'
     elif 'teardown_' in lowername or '_teardown' in lowername:
-        subtype = 'module teardown'
+        subtype = 'teardown'
     else: subtype = None
     return subtype
 
@@ -95,10 +95,10 @@ class test_module(object):
                 description = self.parse_subroutine_description(f, subname)
                 sub = test_subroutine(subname, description, subtype)
                 self.subroutines.append(sub)
-            elif subtype == 'module setup': self.setup = subname
-            elif subtype == 'module teardown': self.teardown = subname
-            elif subtype == 'setup': self.global_setup = True
-            elif subtype == 'teardown': self.global_teardown = True
+            elif subtype == 'setup': self.setup = subname
+            elif subtype == 'teardown': self.teardown = subname
+            elif subtype == 'global setup': self.global_setup = True
+            elif subtype == 'global teardown': self.global_teardown = True
 
     def parse_subroutines(self, f):
         """Parses subroutines in test module."""
