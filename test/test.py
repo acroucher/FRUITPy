@@ -7,8 +7,16 @@ class FRUITPyTestCase(unittest.TestCase):
 
     def test_subroutine_type(self):
         """Tests subroutine_type function."""
+        self.assertEqual(FRUIT.subroutine_type("foo()"), None)
         self.assertEqual(FRUIT.subroutine_type("test_abc"), "test")
         self.assertEqual(FRUIT.subroutine_type("test_abc()"), "test")
+        self.assertEqual(FRUIT.subroutine_type("setup"), "global setup")
+        self.assertEqual(FRUIT.subroutine_type("teardown"), "global teardown")
+        self.assertEqual(FRUIT.subroutine_type("test_setup"), "test")
+        self.assertEqual(FRUIT.subroutine_type("test_teardown"), "test")
+        self.assertEqual(FRUIT.subroutine_type("foo_test"), None)
+        self.assertEqual(FRUIT.subroutine_type("setup_test"), "setup")
+        self.assertEqual(FRUIT.subroutine_type("setup_bar"), "setup")
 
     def suite_test(self, suite, files, global_setup, 
                    global_teardown, num_modules):
