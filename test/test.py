@@ -5,6 +5,11 @@ import FRUIT
 
 class FRUITPyTestCase(unittest.TestCase):
 
+    def test_subroutine_type(self):
+        """Tests subroutine_type function."""
+        self.assertEqual(FRUIT.subroutine_type("test_abc"), "test")
+        self.assertEqual(FRUIT.subroutine_type("test_abc()"), "test")
+
     def suite_test(self, suite, files, global_setup, 
                    global_teardown, num_modules):
         """Tests a suite against specified expected values."""
