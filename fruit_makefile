@@ -8,22 +8,22 @@ INCL_DIR = $(HOME)/include
 F90=.f90
 OBJ=.o
 LIB = libfruit.so
-SRC = src/
+SRC = src
 BUILD = $(SRC)
 
 # compiler options:
 FC = mpif90
 FLAGS = -c -fpic -O3
 
-SOURCES = fruit_util fruit fruit_mpi
-OBJS = $(patsubst %, $(BUILD)%$(OBJ), $(SOURCES))
+SOURCES = $(wildcard $(SRC)/*$(F90))
+OBJS = $(patsubst $(SRC)/%$(F90), $(BUILD)/%$(OBJ), $(SOURCES))
 
 $(LIB) : $(OBJS)
 	$(FC) -shared -o $(LIB) $(OBJS)
 
-$(BUILD)%$(OBJ): $(SRC)%$(F90)
+$(BUILD)/%$(OBJ): $(SRC)/%$(F90)
 	$(FC) $(FLAGS) -c $< -o $@
 
 install : 
 	cp $(LIB) $(INSTALL_DIR)
-	cp $(BUILD)*.mod $(INCL_DIR)
+	cp $(BUILD)/*.mod $(INCL_DIR)
