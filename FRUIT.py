@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
 
+
 def subroutine_type(name):
     """Returns type of subroutine, 'setup' or 'teardown' if it has
     either of those names, or module setup or teardown, otherwise None."""
@@ -40,6 +41,7 @@ def subroutine_type(name):
     else: subtype = None
     return subtype
 
+
 class test_subroutine(object):
     """Stores test subroutine data."""
 
@@ -47,6 +49,7 @@ class test_subroutine(object):
         self.name = name
         self.description = description
         self.subtype = subtype
+
 
 class test_module(object):
 
@@ -110,6 +113,7 @@ class test_module(object):
             if 'subroutine' in line.lower(): self.parse_subroutine(f, line)
             line = f.readline()
 
+
 class test_result(object):
 
     def __init__(self, success = 0, total = 0):
@@ -125,6 +129,7 @@ class test_result(object):
             return float(self.success) / float(self.total) * 100.
         except ZeroDivisionError: return 0.0
     percent = property(get_percent)
+
 
 class test_suite(object):
 
@@ -378,6 +383,7 @@ class test_suite(object):
             if self.build(build_command, output_dir, update):
                 return self.run(run_command, num_procs, output_dir)
         return False
+
 
 if __name__ == '__main__':
     from sys import argv

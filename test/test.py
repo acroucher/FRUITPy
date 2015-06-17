@@ -3,6 +3,7 @@
 import unittest
 import FRUIT
 
+
 class FRUITPyTestCase(unittest.TestCase):
 
     def test_subroutine_type(self):
@@ -97,8 +98,7 @@ class FRUITPyTestCase(unittest.TestCase):
         self.subroutine_test(mod.subroutines[1],
                              "test_2", "Test 2 with setup")
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(FRUITPyTestCase)
     unittest.TextTestRunner(verbosity = 1).run(suite)
-

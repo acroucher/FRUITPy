@@ -1,6 +1,7 @@
 # PyTOUGH setup script
 from distutils.core import setup
 
+
 setup(name='FRUITPy',
       version='0.1.0',
       description='Python interface for the FRUIT Fortran unit testing framework',
