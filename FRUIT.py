@@ -45,7 +45,7 @@ def subroutine_type(name):
 class test_subroutine(object):
     """Stores test subroutine data."""
 
-    def __init__(self, name = "", description = "", subtype = None):
+    def __init__(self, name="", description="", subtype=None):
         self.name = name
         self.description = description
         self.subtype = subtype
@@ -116,7 +116,7 @@ class test_module(object):
 
 class test_result(object):
 
-    def __init__(self, success = 0, total = 0):
+    def __init__(self, success=0, total=0):
         self.success = success
         self.total = total
 
@@ -175,7 +175,7 @@ class test_suite(object):
         imod = line.find('module')
         self.test_module_name = line[imod:].strip().split()[1]
 
-    def driver_lines(self, num_procs = 1, mpi_comm = 'MPI_COMM_WORLD'):
+    def driver_lines(self, num_procs=1, mpi_comm='MPI_COMM_WORLD'):
         """Creates lines for driver program to write to file."""
 
         lines = []
@@ -236,7 +236,7 @@ class test_suite(object):
 
         return lines
 
-    def write(self, driver, num_procs = 1, mpi_comm = 'MPI_COMM_WORLD'):
+    def write(self, driver, num_procs=1, mpi_comm='MPI_COMM_WORLD'):
         """Writes driver program to file."""
         from os.path import isfile
         self.driver = driver
@@ -251,7 +251,7 @@ class test_suite(object):
             f.close()
         return update
 
-    def build(self, build_command, output_dir = '', update = True):
+    def build(self, build_command, output_dir='', update=True):
         """Compiles and links FRUIT driver program. Returns True if
         the build was successful. The output_dir parameter specifies
         the directory for the executable (same as source by default).
@@ -266,11 +266,11 @@ class test_suite(object):
         if platform == 'win32': self.exe += ".exe"
         pathexe = output_dir + self.exe
         if isfile(pathexe) and update: remove(pathexe)
-        call(build_command, shell = True)
+        call(build_command, shell=True)
         self.built = isfile(pathexe)
         return self.built
 
-    def run(self, run_command = None, num_procs = 1, output_dir = ''):
+    def run(self, run_command=None, num_procs=1, output_dir=''):
         """Runs test suite, and returns True if all tests passed. An optional run command
         may be specified. If num_procs > 1, the suite will be run using in parallel using
         MPI."""
@@ -295,7 +295,7 @@ class test_suite(object):
         path, basename = split(basename)
         self.outputfile = basename + '.out'
         run += " > " + self.outputfile
-        call(run, shell = True)
+        call(run, shell=True)
         self.parse_output_file()
         if output_dir != '': os.chdir(orig_dir)
         return self.success
@@ -362,8 +362,8 @@ class test_suite(object):
         print("  asserts: ", self.asserts)
         print("  cases  : ", self.cases)
 
-    def build_run(self, driver, build_command = "make", run_command = None,
-                  num_procs = 1, output_dir = '', mpi_comm = 'MPI_COMM_WORLD'):
+    def build_run(self, driver, build_command="make", run_command=None,
+                  num_procs=1, output_dir='', mpi_comm='MPI_COMM_WORLD'):
         """Writes, builds and runs test suite. Returns True if the
         build and all tests were successful.
         The parameters are:
