@@ -87,7 +87,7 @@ class test_module(object):
         while not line.strip():
             line = f.readline()
         comment_pos = line.find('!')
-        if comment_pos >=0:
+        if comment_pos >= 0:
             description = line[comment_pos+1:].strip()
         else:
             description = subname
@@ -100,7 +100,7 @@ class test_module(object):
         if '!' not in pre and 'end' not in pre.lower():
             subname = line[isub:].strip().split()[1]
             bracpos = subname.find('(')
-            if bracpos >=0:
+            if bracpos >= 0:
                 subname = subname[:bracpos]
             subtype = subroutine_type(subname)
             if subtype == 'test':
@@ -369,7 +369,7 @@ class test_suite(object):
         """Parses a summary line containing statistics on successful and total
         numbers of asserts or cases."""
         items = line.split()
-        slashpos = -(items[::-1].index('/') + 1) # last occurrence of /
+        slashpos = -(items[::-1].index('/') + 1)  # last occurrence of /
         return int(items[slashpos - 1]), int(items[slashpos + 1])
 
     def get_statistics(self):
