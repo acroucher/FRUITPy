@@ -18,7 +18,7 @@ class FRUITPyTestCase(unittest.TestCase):
         self.assertEqual(FRUIT.subroutine_type("setup_test"), "setup")
         self.assertEqual(FRUIT.subroutine_type("setup_bar"), "setup")
 
-    def suite_test(self, suite, files, global_setup, 
+    def suite_test(self, suite, files, global_setup,
                    global_teardown, num_modules):
         """Tests a suite against specified expected values."""
         self.assertEqual(suite.test_filenames, files)
@@ -40,19 +40,19 @@ class FRUITPyTestCase(unittest.TestCase):
         self.assertEqual(sub.name, name)
         self.assertEqual(sub.description, description)
         self.assertEqual(sub.subtype, "test")
-        
+
     def test_adder(self):
         """Unit test for adder module."""
 
         files = ['adder_test.F90']
-        
+
         suite = FRUIT.test_suite(files)
-        self.suite_test(suite, files, global_setup = False, 
+        self.suite_test(suite, files, global_setup = False,
                         global_teardown = False, num_modules = 1)
-                   
+
         mod = suite.test_modules[0]
-        self.module_test(mod, setup = None, teardown = None, 
-                         global_setup = False, global_teardown = False, 
+        self.module_test(mod, setup = None, teardown = None,
+                         global_setup = False, global_teardown = False,
                          num_subroutines = 5)
         self.subroutine_test(mod.subroutines[0],
                              "test_add1", "test_add1")
@@ -69,28 +69,28 @@ class FRUITPyTestCase(unittest.TestCase):
         """Tests global setup/ teardown module."""
 
         files = ['setup.F90', 'adder_test.F90']
-        
+
         suite = FRUIT.test_suite(files)
-        self.suite_test(suite, files, global_setup = True, 
+        self.suite_test(suite, files, global_setup = True,
                         global_teardown = True, num_modules = 2)
 
         mod = suite.test_modules[1]
-        self.module_test(mod, setup = None, teardown = None, 
-                         global_setup = False, global_teardown = False, 
+        self.module_test(mod, setup = None, teardown = None,
+                         global_setup = False, global_teardown = False,
                          num_subroutines = 5)
 
     def test_module_setup(self):
         """Tests module setup/ teardown routines."""
 
         files = ['adder_setup_test.F90']
-        
+
         suite = FRUIT.test_suite(files)
-        self.suite_test(suite, files, global_setup = False, 
+        self.suite_test(suite, files, global_setup = False,
                         global_teardown = False, num_modules = 1)
 
         mod = suite.test_modules[0]
-        self.module_test(mod, setup = 'local_setup', teardown = 'teardown_adder', 
-                         global_setup = False, global_teardown = False, 
+        self.module_test(mod, setup = 'local_setup', teardown = 'teardown_adder',
+                         global_setup = False, global_teardown = False,
                          num_subroutines = 2)
         self.subroutine_test(mod.subroutines[0],
                              "test_1", "test_1")

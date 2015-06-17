@@ -42,7 +42,7 @@ def subroutine_type(name):
 
 class test_subroutine(object):
     """Stores test subroutine data."""
-    
+
     def __init__(self, name = "", description = "", subtype = None):
         self.name = name
         self.description = description
@@ -63,7 +63,7 @@ class test_module(object):
         """Parse module name and test cases."""
         f = open(self.test_filename)
         self.parse_test_module_name(f)
-        self.parse_subroutines(f)        
+        self.parse_subroutines(f)
         f.close()
 
     def parse_test_module_name(self, f):
@@ -125,7 +125,7 @@ class test_result(object):
             return float(self.success) / float(self.total) * 100.
         except ZeroDivisionError: return 0.0
     percent = property(get_percent)
-        
+
 class test_suite(object):
 
     """Class for suite of FRUIT tests"""
@@ -212,7 +212,7 @@ class test_suite(object):
                     lines.append('  ! ' + mod.test_filename.strip() + ':')
                 if mod.setup: lines.append('  call ' + mod.setup)
                 for sub in mod.subroutines:
-                    lines.append('  call run_test_case(' + 
+                    lines.append('  call run_test_case(' +
                                  sub.name + ',"' + sub.description + '")')
                 if mod.teardown: lines.append('  call ' + mod.teardown)
                 if mod.setup or mod.teardown or mod.subroutines: lines.append('')
@@ -245,7 +245,7 @@ class test_suite(object):
             f.write(lines)
             f.close()
         return update
-        
+
     def build(self, build_command, output_dir = '', update = True):
         """Compiles and links FRUIT driver program. Returns True if
         the build was successful. The output_dir parameter specifies
@@ -278,7 +278,7 @@ class test_suite(object):
         if run_command is None:
             if num_procs == 1:
                 run_command = './' if os.name == "posix" else ''
-            else: 
+            else:
                 run_command = "mpirun -np " + str(num_procs) + ' '
         else:
             if num_procs == 1:
@@ -352,7 +352,7 @@ class test_suite(object):
         else:
             print("Some tests failed:\n")
             print('\n'.join(self.messages))
-            print() 
+            print()
         print("Hit rate:")
         print("  asserts: ", self.asserts)
         print("  cases  : ", self.cases)
@@ -368,7 +368,7 @@ class test_suite(object):
         - 'run_command' (string): command for running the driver program (to override
         the default, based on the driver source name)
         - 'num_procs' (integer): set > 1 to run the test suite in parallel using MPI
-        - 'output_dir' (string): directory for driver executable (default is the 
+        - 'output_dir' (string): directory for driver executable (default is the
         driver source directory)
         - 'mpi_comm' (string): name of MPI communicator to use in driver program
         (default is 'MPI_COMM_WORLD')
@@ -378,7 +378,7 @@ class test_suite(object):
             if self.build(build_command, output_dir, update):
                 return self.run(run_command, num_procs, output_dir)
         return False
-    
+
 if __name__ == '__main__':
     from sys import argv
     filename = argv[1]

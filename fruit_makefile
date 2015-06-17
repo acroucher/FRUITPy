@@ -24,6 +24,6 @@ $(LIB) : $(OBJS)
 $(BUILD)/%$(OBJ): $(SRC)/%$(F90)
 	$(FC) $(FLAGS) -c $< -o $@
 
-install : 
+install :
 	cp $(LIB) $(INSTALL_DIR)
 	cp $(BUILD)/*.mod $(INCL_DIR)
