@@ -164,7 +164,8 @@ class test_suite(object):
         self.parse()
 
     def __repr__(self):
-        return '\n'.join([mod.test_filename + ': ' + str(mod) for mod in self.test_modules])
+        return '\n'.join([mod.test_filename + ': ' + str(mod)
+                          for mod in self.test_modules])
 
     def get_num_test_modules(self):
         return len(self.test_modules)
@@ -297,9 +298,9 @@ class test_suite(object):
         return self.built
 
     def run(self, run_command=None, num_procs=1, output_dir=''):
-        """Runs test suite, and returns True if all tests passed. An optional run command
-        may be specified. If num_procs > 1, the suite will be run using in parallel using
-        MPI."""
+        """Runs test suite, and returns True if all tests passed. An optional
+        run command may be specified. If num_procs > 1, the suite will be run
+        using in parallel using MPI."""
         import os
         from os.path import splitext, isfile, split
         from subprocess import call
@@ -315,7 +316,8 @@ class test_suite(object):
             if num_procs == 1:
                 run_command = run_command.strip() + ' '
             else:
-                run_command = run_command.strip() + " -np " + str(num_procs) + ' '
+                run_command = (run_command.strip() + " -np " + str(num_procs) +
+                               ' ')
         run = run_command + self.exe
         basename, ext = splitext(self.exe)
         path, basename = split(basename)
@@ -348,8 +350,10 @@ class test_suite(object):
     output = property(get_output)
 
     def get_success(self):
-        """Determines whether all tests ran successfully, by parsing the output."""
-        self.success = any(["SUCCESSFUL!" in line for line in self.output_lines])
+        """Determines whether all tests ran successfully, by parsing the
+        output."""
+        self.success = any(["SUCCESSFUL!" in line
+                            for line in self.output_lines])
 
     def get_messages(self):
         """Parses output failure messages."""
@@ -398,16 +402,18 @@ class test_suite(object):
         """Writes, builds and runs test suite. Returns True if the
         build and all tests were successful.
         The parameters are:
-        - 'driver' (string): name of the driver program source file to be created
-        (include path if you want it created in a different directory)
-        - 'build_command' (string): command for building the test driver program
-        - 'run_command' (string): command for running the driver program (to override
-        the default, based on the driver source name)
-        - 'num_procs' (integer): set > 1 to run the test suite in parallel using MPI
-        - 'output_dir' (string): directory for driver executable (default is the
-        driver source directory)
-        - 'mpi_comm' (string): name of MPI communicator to use in driver program
-        (default is 'MPI_COMM_WORLD')
+        - 'driver' (string): name of the driver program source file to be
+        created (include path if you want it created in a different directory)
+        - 'build_command' (string): command for building the test driver
+        program
+        - 'run_command' (string): command for running the driver program (to
+        override the default, based on the driver source name)
+        - 'num_procs' (integer): set > 1 to run the test suite in parallel
+        using MPI
+        - 'output_dir' (string): directory for driver executable (default is
+        the driver source directory)
+        - 'mpi_comm' (string): name of MPI communicator to use in driver
+        program (default is 'MPI_COMM_WORLD')
         """
         if self.num_test_modules > 0:
             update = self.write(driver, num_procs, mpi_comm)

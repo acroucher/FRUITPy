@@ -60,11 +60,14 @@ class FRUITPyTestCase(unittest.TestCase):
         self.subroutine_test(mod.subroutines[1],
                              "test_add2", "Adder test with comment")
         self.subroutine_test(mod.subroutines[2],
-                             "test_add3_setup", "Adder test with setup in title")
+                             "test_add3_setup",
+                             "Adder test with setup in title")
         self.subroutine_test(mod.subroutines[3],
-                             "test_teardown_test", "Adder test with teardown in title")
+                             "test_teardown_test",
+                             "Adder test with teardown in title")
         self.subroutine_test(mod.subroutines[4],
-                             "TEST_OLDSCHOOL", "TEST ALL CAPS, MISSING END NAME")
+                             "TEST_OLDSCHOOL",
+                             "TEST ALL CAPS, MISSING END NAME")
 
     def test_global_setup(self):
         """Tests global setup/ teardown module."""
