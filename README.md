@@ -57,7 +57,7 @@ FRUITPy assumes the following conventions for your Fortran test modules:
 # Files created by FRUITPy
 
 When you call the `build_run()` method of a `test_suite` object, it will create a Fortran driver source file for the suite of tests, and build it into a driver executable. Specify the desired driver source file name in your call to build_run(), along with the command for building the driver. This could be e.g. a make command if you have a makefile to build the driver.
- 
+
 If the driver program is successfully built, it will have a name based on the driver source file name (with a *.exe extension added on Windows systems). Note that this naming convention must be respected in your build command (e.g. makefile). Your makefile or other build command will also need to specify how to link to your code under test, to your test modules and to FRUIT (see above for methods of linking to FRUIT).
 
 If all goes well, the driver program will run and FRUIT will carry out the tests. The FRUIT console output is not displayed automatically, but is saved in the `test_suite` `output` property, and is also written to an output file (with same base name as the driver program, but with a '.out' extension).

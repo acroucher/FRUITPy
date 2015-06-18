@@ -41,5 +41,5 @@ contains
   end subroutine adder_init
 
 !------------------------------------------------------------------------
-  
+
 end module adder_module

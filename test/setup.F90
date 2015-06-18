@@ -4,7 +4,7 @@ module setup_module
   private
 
   real, public :: x = 0.0
-  
+
   contains
 
 !------------------------------------------------------------------------
