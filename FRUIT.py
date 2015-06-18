@@ -24,7 +24,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from __future__ import print_function
+from __future__ import (absolute_import, division, print_function)
+
 
 
 def subroutine_type(name):
@@ -140,7 +141,7 @@ class test_result(object):
     def get_percent(self):
         """Returns percentage of successful results."""
         try:
-            return float(self.success) / float(self.total) * 100.
+            return self.success / self.total * 100
         except ZeroDivisionError:
             return 0.0
     percent = property(get_percent)
@@ -361,7 +362,7 @@ class test_suite(object):
         if not self.success:
             for i, line in enumerate(self.output_lines):
                 if "Failed assertion messages:" in line:
-                    for j in xrange(i+1, len(self.output_lines)):
+                    for j in range(i + 1, len(self.output_lines)):
                         msg = self.output_lines[j]
                         if "end of failed assertion messages." in msg:
                             break
