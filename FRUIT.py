@@ -362,7 +362,7 @@ class test_suite(object):
         if not self.success:
             for i, line in enumerate(self.output_lines):
                 if "Failed assertion messages:" in line:
-                    for j in xrange(i+1, len(self.output_lines)):
+                    for j in range(i + 1, len(self.output_lines)):
                         msg = self.output_lines[j]
                         if "end of failed assertion messages." in msg:
                             break
