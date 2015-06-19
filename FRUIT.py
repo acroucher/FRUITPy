@@ -286,6 +286,7 @@ class test_suite(object):
         from subprocess import call
         from os.path import isfile, splitext, split
         from os import remove
+        import shlex
         from sys import platform
         self.exe, ext = splitext(self.driver)
         source_path, self.exe = split(self.exe)
@@ -294,7 +295,9 @@ class test_suite(object):
         pathexe = output_dir + self.exe
         if isfile(pathexe) and update:
             remove(pathexe)
-        call(build_command, shell=True)
+        if not isinstance(build_command, list):
+            build_command = shlex.split(build_command)
+        call(build_command)
         self.built = isfile(pathexe)
         return self.built
 
@@ -398,14 +401,14 @@ class test_suite(object):
         print("  asserts: ", self.asserts)
         print("  cases  : ", self.cases)
 
-    def build_run(self, driver, build_command="make", run_command=None,
+    def build_run(self, driver, build_command=['make'], run_command=None,
                   num_procs=1, output_dir='', mpi_comm='MPI_COMM_WORLD'):
         """Writes, builds and runs test suite. Returns True if the
         build and all tests were successful.
         The parameters are:
         - 'driver' (string): name of the driver program source file to be
         created (include path if you want it created in a different directory)
-        - 'build_command' (string): command for building the test driver
+        - 'build_command' (list or str): command for building the test driver
         program
         - 'run_command' (string): command for running the driver program (to
         override the default, based on the driver source name)
