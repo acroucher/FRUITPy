@@ -4,6 +4,8 @@ FRUITPy is a module for building and running Fortran unit tests using a Python i
 
 Enjoy a slice of FRUITPy while maintaining Fortran!
 
+[![Build Status](https://travis-ci.org/acroucher/FRUITPy.svg)](https://travis-ci.org/acroucher/FRUITPy)
+
 # Installing FRUITPy:
 
 First, you need to have FRUIT itself installed on your machine. If you want to use FRUITPy for parallel unit testing using MPI, you will need FRUIT version 3.3.0 or later.
