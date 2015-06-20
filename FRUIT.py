@@ -69,10 +69,9 @@ class test_module(object):
 
     def parse(self):
         """Parse module name and test cases."""
-        f = open(self.test_filename)
-        self.parse_test_module_name(f)
-        self.parse_subroutines(f)
-        f.close()
+        with open(self.test_filename) as f:
+            self.parse_test_module_name(f)
+            self.parse_subroutines(f)
 
     def parse_test_module_name(self, f):
         """Parses test module name from file f."""
@@ -267,14 +266,14 @@ class test_suite(object):
         self.driver = driver
         lines = '\n'.join(self.driver_lines(num_procs, mpi_comm))
         if isfile(self.driver):
-            oldlines = ''.join([line for line in open(self.driver)])
+            with open(self.driver) as f:
+                oldlines = ''.join([line for line in f])
             update = oldlines != lines
         else:
             update = True
         if update:
-            f = open(self.driver, 'w')
-            f.write(lines)
-            f.close()
+            with open(self.driver, 'w') as f:
+                f.write(lines)
         return update
 
     def build(self, build_command, output_dir='', update=True):
