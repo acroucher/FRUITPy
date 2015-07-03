@@ -296,8 +296,8 @@ class test_suite(object):
             remove(pathexe)
         if not isinstance(build_command, list):
             build_command = shlex.split(build_command)
-        call(build_command)
-        self.built = isfile(pathexe)
+        ret = call(build_command)
+        self.built = ret == 0 and isfile(pathexe)
         return self.built
 
     def run(self, run_command=None, num_procs=1, output_dir=''):
