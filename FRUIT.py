@@ -379,6 +379,10 @@ class test_suite(object):
 
     def summary(self):
         """Prints a summary of the test results."""
+        if not self.built:
+            print('Test driver could not be built.')
+            return
+
         if self.success:
             print("All tests passed.")
         else:
