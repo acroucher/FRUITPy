@@ -69,10 +69,9 @@ class test_module(object):
 
     def parse(self):
         """Parse module name and test cases."""
-        f = open(self.test_filename)
-        self.parse_test_module_name(f)
-        self.parse_subroutines(f)
-        f.close()
+        with open(self.test_filename) as f:
+            self.parse_test_module_name(f)
+            self.parse_subroutines(f)
 
     def parse_test_module_name(self, f):
         """Parses test module name from file f."""
@@ -267,14 +266,14 @@ class test_suite(object):
         self.driver = driver
         lines = '\n'.join(self.driver_lines(num_procs, mpi_comm))
         if isfile(self.driver):
-            oldlines = ''.join([line for line in open(self.driver)])
+            with open(self.driver) as f:
+                oldlines = ''.join([line for line in f])
             update = oldlines != lines
         else:
             update = True
         if update:
-            f = open(self.driver, 'w')
-            f.write(lines)
-            f.close()
+            with open(self.driver, 'w') as f:
+                f.write(lines)
         return update
 
     def build(self, build_command, output_dir='', update=True):
@@ -286,6 +285,7 @@ class test_suite(object):
         from subprocess import call
         from os.path import isfile, splitext, split
         from os import remove
+        import shlex
         from sys import platform
         self.exe, ext = splitext(self.driver)
         source_path, self.exe = split(self.exe)
@@ -294,7 +294,9 @@ class test_suite(object):
         pathexe = output_dir + self.exe
         if isfile(pathexe) and update:
             remove(pathexe)
-        call(build_command, shell=True)
+        if not isinstance(build_command, list):
+            build_command = shlex.split(build_command)
+        call(build_command)
         self.built = isfile(pathexe)
         return self.built
 
@@ -304,46 +306,35 @@ class test_suite(object):
         using in parallel using MPI."""
         import os
         from os.path import splitext, isfile, split
-        from subprocess import call
+        import shlex
+        from subprocess import check_output
         if output_dir != '':
             orig_dir = os.getcwd()
             os.chdir(output_dir)
         if run_command is None:
             if num_procs == 1:
-                run_command = './' if os.name == "posix" else ''
+                prefix = './' if os.name == 'posix' else ''
+                run = [prefix + self.exe]
             else:
-                run_command = "mpirun -np " + str(num_procs) + ' '
+                run = ['mpirun', '-np', str(num_procs), self.exe]
         else:
-            if num_procs == 1:
-                run_command = run_command.strip() + ' '
-            else:
-                run_command = (run_command.strip() + " -np " + str(num_procs) +
-                               ' ')
-        run = run_command + self.exe
-        basename, ext = splitext(self.exe)
-        path, basename = split(basename)
-        self.outputfile = basename + '.out'
-        run += " > " + self.outputfile
-        call(run, shell=True)
-        self.parse_output_file()
+            if not isinstance(run_command, list):
+                run_command = shlex.split(run_command)
+            if num_procs != 1:
+                run_command += ['-np', str(num_procs)]
+            run = run_command + [self.exe]
+        output = check_output(run)
+        self.parse_output(output)
         if output_dir != '':
             os.chdir(orig_dir)
         return self.success
 
-    def parse_output_file(self):
-        """Parses output file."""
-        self.get_output_lines()
+    def parse_output(self, output):
+        """Parses output."""
+        self.output_lines = output.decode().splitlines()
         self.get_success()
         self.get_messages()
         self.get_statistics()
-
-    def get_output_lines(self):
-        """Reads output file into output property."""
-        from os.path import isfile
-        if isfile(self.outputfile):
-            self.output_lines = open(self.outputfile).readlines()
-        else:
-            self.output_lines = []
 
     def get_output(self):
         """Gets output from output_lines, in a form suitable for display."""
@@ -398,17 +389,17 @@ class test_suite(object):
         print("  asserts: ", self.asserts)
         print("  cases  : ", self.cases)
 
-    def build_run(self, driver, build_command="make", run_command=None,
+    def build_run(self, driver, build_command=['make'], run_command=None,
                   num_procs=1, output_dir='', mpi_comm='MPI_COMM_WORLD'):
         """Writes, builds and runs test suite. Returns True if the
         build and all tests were successful.
         The parameters are:
         - 'driver' (string): name of the driver program source file to be
         created (include path if you want it created in a different directory)
-        - 'build_command' (string): command for building the test driver
+        - 'build_command' (list or str): command for building the test driver
         program
-        - 'run_command' (string): command for running the driver program (to
-        override the default, based on the driver source name)
+        - 'run_command' (list or str): command for running the driver program
+        (to override the default, based on the driver source name)
         - 'num_procs' (integer): set > 1 to run the test suite in parallel
         using MPI
         - 'output_dir' (string): directory for driver executable (default is
