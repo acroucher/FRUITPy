@@ -74,6 +74,8 @@ You can also access summary statistics via the `test_suite` properties `asserts`
 
 You can print a summary of the results by using the `test_suite` `summary()` method.
 
+Anything printed to standard output during the tests (e.g. FRUIT output, and anything your unit tests might print) can be accessed via the `test_suite` `output_lines` property (a list of strings).
+
 # Parallel unit testing using FRUITPy
 
 If you have FRUIT version 3.3.0 or later, you can use FRUITPy to do parallel unit testing using MPI. The procedure to follow is mostly the same as for serial unit testing, with these differences:
