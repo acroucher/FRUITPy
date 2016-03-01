@@ -193,7 +193,7 @@ class test_suite(object):
         imod = line.find('module')
         self.test_module_name = line[imod:].strip().split()[1]
 
-    def driver_lines(self, num_procs=1, mpi_comm='MPI_COMM_WORLD'):
+    def driver_lines(self, mpi=False, mpi_comm='MPI_COMM_WORLD'):
         """Creates lines for driver program to write to file."""
 
         lines = []
@@ -210,14 +210,14 @@ class test_suite(object):
         lines.append('')
 
         lines.append('  use fruit')
-        if num_procs > 1:
+        if mpi:
             lines.append('  use fruit_mpi')
         for mod in self.test_modules:
             lines.append('  use ' + mod.test_module_name)
         lines.append('')
 
         lines.append('  implicit none')
-        if num_procs > 1:
+        if mpi:
             lines.append('  integer :: size, rank, ierr')
         lines.append('')
 
@@ -226,7 +226,7 @@ class test_suite(object):
             lines.append('  call setup')
         lines.append('')
 
-        if num_procs > 1:
+        if mpi:
             lines.append('  call MPI_COMM_SIZE(' + mpi_comm + ', size, ierr)')
             lines.append('  call MPI_COMM_RANK(' + mpi_comm + ', rank, ierr)')
             lines.append('')
@@ -245,12 +245,12 @@ class test_suite(object):
                 if mod.setup or mod.teardown or mod.subroutines:
                     lines.append('')
 
-        if num_procs == 1:
-            lines.append('  call fruit_summary')
-            lines.append('  call fruit_finalize')
-        else:
+        if mpi:
             lines.append('  call fruit_summary_mpi(size, rank)')
             lines.append('  call fruit_finalize_mpi(size, rank)')
+        else:
+            lines.append('  call fruit_summary')
+            lines.append('  call fruit_finalize')
 
         if self.global_teardown:
             lines.append('  call teardown')
@@ -260,11 +260,11 @@ class test_suite(object):
 
         return lines
 
-    def write(self, driver, num_procs=1, mpi_comm='MPI_COMM_WORLD'):
+    def write(self, driver, mpi=False, mpi_comm='MPI_COMM_WORLD'):
         """Writes driver program to file."""
         from os.path import isfile
         self.driver = driver
-        lines = '\n'.join(self.driver_lines(num_procs, mpi_comm))
+        lines = '\n'.join(self.driver_lines(mpi, mpi_comm))
         if isfile(self.driver):
             with open(self.driver) as f:
                 oldlines = ''.join([line for line in f])
@@ -300,27 +300,28 @@ class test_suite(object):
         self.built = ret == 0 and isfile(pathexe)
         return self.built
 
-    def run(self, run_command=None, num_procs=1, output_dir=''):
-        """Runs test suite, and returns True if all tests passed. An optional
-        run command may be specified. If num_procs > 1, the suite will be run
-        using in parallel using MPI."""
+    def run(self, run_command=None, num_procs=1, output_dir='', mpi=False):
+        """Runs test suite, and returns True if all tests passed. An
+        optional run command may be specified. If num_procs > 1, or
+        mpi is True, the suite will be run using in parallel using MPI."""
         import os
         from os.path import splitext, isfile, split
         import shlex
         from subprocess import check_output
+        if num_procs > 1: mpi = True
         if output_dir != '':
             orig_dir = os.getcwd()
             os.chdir(output_dir)
         if run_command is None:
-            if num_procs == 1:
+            if mpi:
+                run = ['mpirun', '-np', str(num_procs), self.exe]
+            else:
                 prefix = './' if os.name == 'posix' else ''
                 run = [prefix + self.exe]
-            else:
-                run = ['mpirun', '-np', str(num_procs), self.exe]
         else:
             if not isinstance(run_command, list):
                 run_command = shlex.split(run_command)
-            if num_procs != 1:
+            if mpi:
                 run_command += ['-np', str(num_procs)]
             run = run_command + [self.exe]
         output = check_output(run)
@@ -394,7 +395,8 @@ class test_suite(object):
         print("  cases  : ", self.cases)
 
     def build_run(self, driver, build_command=['make'], run_command=None,
-                  num_procs=1, output_dir='', mpi_comm='MPI_COMM_WORLD'):
+                  num_procs=1, output_dir='', mpi_comm='MPI_COMM_WORLD',
+                  mpi=False):
         """Writes, builds and runs test suite. Returns True if the
         build and all tests were successful.
         The parameters are:
@@ -410,11 +412,15 @@ class test_suite(object):
         the driver source directory)
         - 'mpi_comm' (string): name of MPI communicator to use in driver
         program (default is 'MPI_COMM_WORLD')
+        - 'mpi' (Boolean): set True to force using MPI. Only needed for
+        num_procs = 1. Can be used to avoid having to rebuild the test
+        executable between runs with 1 processor and multiple processors.
         """
+        if num_procs > 1: mpi = True
         if self.num_test_modules > 0:
-            update = self.write(driver, num_procs, mpi_comm)
+            update = self.write(driver, mpi, mpi_comm)
             if self.build(build_command, output_dir, update):
-                return self.run(run_command, num_procs, output_dir)
+                return self.run(run_command, num_procs, output_dir, mpi)
         return False
 
 
