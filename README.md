@@ -86,6 +86,8 @@ If you have FRUIT version 3.3.0 or later, you can use FRUITPy to do parallel uni
 
 - use an MPI wrapper compiler in your makefile to build the test suite, e.g. `mpif90`
 
+If you want to force using MPI even on one processor, set the optional parameter `mpi = True` in the `build_run()` (or `run()`) calls. This can avoid rebuilding the test executable between runs with one and more than one processor.
+
 # Licensing
 
 FRUITPy is free software, distributed under the GNU General Public License (GPL).
