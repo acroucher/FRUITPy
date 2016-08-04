@@ -1,3 +1,5 @@
+! This comment contains the word 'module'
+
 module adder_module
 
   ! Module for adding numbers.

@@ -75,11 +75,12 @@ class test_module(object):
 
     def parse_test_module_name(self, f):
         """Parses test module name from file f."""
-        line = f.readline()
-        while 'module' not in line.lower():
+        self.test_module_name = None
+        while self.test_module_name is None:
             line = f.readline()
-        imod = line.find('module')
-        self.test_module_name = line[imod:].strip().split()[1]
+            imod = line.lower().find('module')
+            if imod >= 0 and '!' not in line[:imod]:
+                self.test_module_name = line[imod:].strip().split()[1]
 
     def parse_subroutine_description(self, f, subname):
         """Parses subroutine to find its description."""
