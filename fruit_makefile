@@ -26,4 +26,4 @@ $(BUILD)/%$(OBJ): $(SRC)/%$(F90)
 
 install :
 	cp $(LIB) $(INSTALL_DIR)
-	cp $(BUILD)/*.mod $(INCL_DIR)
+	cp *.mod $(INCL_DIR)
