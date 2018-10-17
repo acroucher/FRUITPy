@@ -323,8 +323,8 @@ class test_suite(object):
             if not isinstance(run_command, list):
                 run_command = shlex.split(run_command)
             if mpi:
-                run_command += ['-np', str(num_procs)]
-            run = run_command + [self.exe]
+                run_command = ['-np', str(num_procs)] + run_command
+            run = run_command
         output = check_output(run)
         self.parse_output(output)
         if output_dir != '':
