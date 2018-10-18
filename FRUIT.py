@@ -218,6 +218,7 @@ class test_suite(object):
         lines.append('')
 
         lines.append('  implicit none')
+        lines.append('  integer :: failed_count')
         if mpi:
             lines.append('  integer :: size, rank, ierr')
         lines.append('')
@@ -246,6 +247,7 @@ class test_suite(object):
                 if mod.setup or mod.teardown or mod.subroutines:
                     lines.append('')
 
+        lines.append('  call get_failed_count(failed_count)')
         if mpi:
             lines.append('  call fruit_summary_mpi(size, rank)')
             lines.append('  call fruit_finalize_mpi(size, rank)')
@@ -256,6 +258,7 @@ class test_suite(object):
         if self.global_teardown:
             lines.append('  call teardown')
 
+        lines.append('  if (failed_count > 0) stop 1')
         lines.append('')
         lines.append('end program tests')
 
