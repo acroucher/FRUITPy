@@ -430,7 +430,24 @@ class test_suite(object):
 
 if __name__ == '__main__':
     from sys import argv
-    filename = argv[1]
-    driver = argv[2]
-    build = argv[3]
-    test_suite(filename).build_run(driver, build)
+    from argparse import ArgumentParser
+    parser = ArgumentParser()
+    parser.add_argument('command', choices=['build_run', 'write'], help=
+                        """
+                        command to be executed,
+                        build_run - write driver file, build and execute tests,
+                        write - write driver file
+                        """)
+    parser.add_argument('file', nargs='+',
+                        help="Fortran module(s) defining test cases")
+    parser.add_argument('-d', '--driver', default="fruit_driver.f90",
+                        help="driver file name, default: %(default)s")
+    parser.add_argument('-b', '--build', default="make",
+                        help="build command, default: %(default)s")
+    args = parser.parse_args(argv[1:])
+    ts = test_suite(args.file)
+    if args.command == "build_run":
+        ts.build_run(args.driver, args.build)
+        ts.summary()
+    elif args.command == "write":
+        ts.write(args.driver)
