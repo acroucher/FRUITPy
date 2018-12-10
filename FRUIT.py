@@ -27,7 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import (absolute_import, division, print_function)
 
 
-
 def subroutine_type(name):
     """Returns type of subroutine, 'setup' or 'teardown' if it has
     either of those names, or module setup or teardown, otherwise None."""
@@ -152,7 +151,6 @@ class test_suite(object):
     """Class for suite of FRUIT tests"""
 
     def __init__(self, test_filenames):
-        from os.path import splitext
         if isinstance(test_filenames, str):
             test_filenames = [test_filenames]
         self.test_filenames = test_filenames
@@ -309,9 +307,8 @@ class test_suite(object):
         optional run command may be specified. If num_procs > 1, or
         mpi is True, the suite will be run using in parallel using MPI."""
         import os
-        from os.path import splitext, isfile, split
         import shlex
-        from subprocess import check_output
+        import subprocess
         if num_procs > 1: mpi = True
         if output_dir != '':
             orig_dir = os.getcwd()
@@ -328,7 +325,8 @@ class test_suite(object):
             if mpi:
                 run_command = ['-np', str(num_procs)] + run_command
             run = run_command
-        output = check_output(run)
+        sp = subprocess.Popen(run, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        output = sp.communicate()[0]
         self.parse_output(output)
         if output_dir != '':
             os.chdir(orig_dir)
