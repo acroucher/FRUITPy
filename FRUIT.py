@@ -27,7 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import (absolute_import, division, print_function)
 
 
-
 def subroutine_type(name):
     """Returns type of subroutine, 'setup' or 'teardown' if it has
     either of those names, or module setup or teardown, otherwise None."""
@@ -152,7 +151,6 @@ class test_suite(object):
     """Class for suite of FRUIT tests"""
 
     def __init__(self, test_filenames):
-        from os.path import splitext
         if isinstance(test_filenames, str):
             test_filenames = [test_filenames]
         self.test_filenames = test_filenames
@@ -309,9 +307,8 @@ class test_suite(object):
         optional run command may be specified. If num_procs > 1, or
         mpi is True, the suite will be run using in parallel using MPI."""
         import os
-        from os.path import splitext, isfile, split
         import shlex
-        from subprocess import check_output
+        import subprocess
         if num_procs > 1: mpi = True
         if output_dir != '':
             orig_dir = os.getcwd()
@@ -328,7 +325,8 @@ class test_suite(object):
             if mpi:
                 run_command = ['-np', str(num_procs)] + run_command
             run = run_command
-        output = check_output(run)
+        sp = subprocess.Popen(run, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        output = sp.communicate()[0]
         self.parse_output(output)
         if output_dir != '':
             os.chdir(orig_dir)
@@ -430,7 +428,24 @@ class test_suite(object):
 
 if __name__ == '__main__':
     from sys import argv
-    filename = argv[1]
-    driver = argv[2]
-    build = argv[3]
-    test_suite(filename).build_run(driver, build)
+    from argparse import ArgumentParser
+    parser = ArgumentParser()
+    parser.add_argument('command', choices=['build_run', 'write'], help=
+                        """
+                        command to be executed,
+                        build_run - write driver file, build and execute tests,
+                        write - write driver file
+                        """)
+    parser.add_argument('file', nargs='+',
+                        help="Fortran module(s) defining test cases")
+    parser.add_argument('-d', '--driver', default="fruit_driver.f90",
+                        help="driver file name, default: %(default)s")
+    parser.add_argument('-b', '--build', default="make",
+                        help="build command, default: %(default)s")
+    args = parser.parse_args(argv[1:])
+    ts = test_suite(args.file)
+    if args.command == "build_run":
+        ts.build_run(args.driver, args.build)
+        ts.summary()
+    elif args.command == "write":
+        ts.write(args.driver)
