@@ -285,7 +285,7 @@ class test_suite(object):
         Setting the update parameter to True forces the executable to
         be rebuilt."""
         from subprocess import call
-        from os.path import isfile, splitext, split
+        from os.path import isfile, splitext, split, join
         from os import remove
         import shlex
         from sys import platform
@@ -293,7 +293,7 @@ class test_suite(object):
         source_path, self.exe = split(self.exe)
         if platform == 'win32':
             self.exe += ".exe"
-        pathexe = output_dir + self.exe
+        pathexe = join(output_dir, self.exe)
         if isfile(pathexe) and update:
             remove(pathexe)
         if not isinstance(build_command, list):
