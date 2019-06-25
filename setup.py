@@ -2,8 +2,7 @@
 
 from __future__ import (absolute_import, division, print_function)
 
-from distutils.core import setup
-
+from setuptools import setup
 
 setup(name='FRUITPy',
       version='0.1.0',
