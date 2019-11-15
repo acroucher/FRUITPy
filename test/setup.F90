@@ -1,7 +1,6 @@
 module setup_module
 
   implicit none
-  private
 
   real, public :: x = 0.0
 

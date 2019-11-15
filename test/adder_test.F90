@@ -1,6 +1,8 @@
-module adder_test
+module adder_test_module
 
   use adder_module
+  use fruit
+  
   implicit none
 
   real :: tol = 1.e-6
@@ -9,7 +11,7 @@ module adder_test
 
 !------------------------------------------------------------------------
 
-    subroutine adder_test(adder, a, b, c)
+    subroutine adder_test(a, b, c)
 
       type(adder_type) :: adder
       real, intent(in) :: a, b, c
@@ -69,4 +71,4 @@ module adder_test
 
 !------------------------------------------------------------------------
 
-end module adder_test
+end module adder_test_module

@@ -40,7 +40,7 @@ contains
 
     self%result = self%a + self%b
 
-  end subroutine adder_init
+  end subroutine adder_add
 
 !------------------------------------------------------------------------
 
