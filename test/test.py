@@ -103,6 +103,35 @@ class FRUITPyTestCase(unittest.TestCase):
         self.subroutine_test(mod.subroutines[1],
                              "test_2", "Test 2 with setup")
 
+    def test_parse_output(self):
+        """Tests parsing of FRUIT output."""
+
+        suite = FRUIT.test_suite([])
+        output  = " Test module initialized\n\n"
+        output += "    . : successful assert,   F : failed assert\n\n"
+        output += ".......F.......F\n\n"
+        output += "     Start of FRUIT summary:\n\n"
+        output += " Some tests failed!\n\n"
+        output += "   -- Failed assertion messages:\n"
+        output += "   [TEST_ABC]:Expected [4], Got [3]\n"
+        output += "   [TEST_DEF]:Expected [3], Got [4]\n"
+        output += "   -- end of failed assertion messages.\n\n"
+        output += " Total asserts :             16\n"
+        output += " Successful    :             14\n"
+        output += " Failed        :              2\n"
+        output += "Successful rate:    87.50%\n\n"
+        output += " Successful asserts / total asserts : [           14 /          16  ]\n"
+        output += " Successful cases   / total cases   : [            2 /           4  ]\n"
+        output += "   -- end of FRUIT summary"
+        suite.parse_output(output)
+        self.assertEqual(False, suite.success)
+        self.assertEqual(14, suite.asserts.success)
+        self.assertEqual(16, suite.asserts.total)
+        self.assertEqual(2, suite.cases.success)
+        self.assertEqual(4, suite.cases.total)
+        self.assertEqual(2, len(suite.messages))
+        self.assertEqual("[TEST_ABC]:Expected [4], Got [3]", suite.messages[0])
+        self.assertEqual("[TEST_DEF]:Expected [3], Got [4]", suite.messages[1])
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(FRUITPyTestCase)
