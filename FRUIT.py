@@ -334,7 +334,10 @@ class test_suite(object):
 
     def parse_output(self, output):
         """Parses output."""
-        self.output_lines = output.decode().splitlines()
+        try:
+            self.output_lines = output.decode().splitlines()
+        except AttributeError:
+            self.output_lines = output.splitlines()
         self.get_success()
         self.get_messages()
         self.get_statistics()
