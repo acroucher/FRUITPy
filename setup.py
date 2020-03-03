@@ -10,7 +10,6 @@ setup(name='FRUITPy',
       author_email="a.croucher@auckland.ac.nz",
       description=('Python interface for the FRUIT Fortran unit testing '
                    'framework'),
-      author_email='a.croucher@auckland.ac.nz',
       url='https://github.com/acroucher/FRUITPy',
       classifiers=[
           "Programming Language :: Python :: 2",
