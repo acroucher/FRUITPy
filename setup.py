@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='FRUITPy',
-      version='0.1.0',
+      version='1.0.0',
       author='Adrian Croucher',
       author_email="a.croucher@auckland.ac.nz",
       description=('Python interface for the FRUIT Fortran unit testing '
